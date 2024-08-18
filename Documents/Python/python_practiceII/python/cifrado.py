@@ -9,36 +9,27 @@ def main():
         try:
             text = input("Ingresa un mensaje a encriptar: ")
             change = int(input("Ingresa un valor de cambio: "))
-            if change < 1 or change > 25:
-                print("Ingresa un valor de cambio válido!")
+            if not 1 <= change <= 25:
+                print("Ingresa un valor de cambio válido entre 1 y 25!")
                 continue
             print(cifrado(text, change))
+        except (ValueError, TypeError) as e:
+            print("Error: ", e)
+            continue
         except KeyboardInterrupt:
+            print("\nPrograma terminado.")
             break
-        except ValueError as e:
-            print("Error: ", e)
-            continue
-        except TypeError as e:
-            print("Error: ", e)
-            continue
-        except:
-            continue
 
 def cifrado(text, change):
     cipher = ""
     for ch in text:
-        if not ch.isalpha():
-            cipher += ch
+        if ch.isalpha():
+            offset = ord('A') if ch.isupper() else ord('a')
+            # El operador módulo (%) se usa para "envolver" el valor resultante si supera 25 (que es la posición de 'Z' para mayúsculas o 'z' para minúsculas). Esto asegura que la rotación continúe desde el principio del alfabeto si es necesario.
+            # Por ejemplo, si el cálculo anterior da 28, entonces 28 % 26 resulta en 2, que corresponde a la tercera letra en el alfabeto, después de completar el ciclo.
+            cipher += chr((ord(ch) - offset + change) % 26 + offset)
         else:
-            more_than_z = ord(ch) + change
-            if ch.isupper() and more_than_z > ord("Z"):
-                counter_up = ord("Z") - ord(ch)
-                cipher += chr(change - counter_up + ord("A") - 1)
-            elif not ch.isupper() and more_than_z > ord("z"):
-                counter_up = ord("z") - ord(ch)
-                cipher += chr(change - counter_up + ord("a") - 1)
-            else:
-                cipher += chr(ord(ch) + change)
+            cipher += ch
     return cipher
 
 
