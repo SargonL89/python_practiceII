@@ -1,27 +1,19 @@
 import re
-from sys import exit
+
 
 def main():
     print(parse(input("HTML: ")))
 
 def parse(s):
-    s_list = s.split()
-    for data in s_list:
-        if data.startswith("src="):
-            data.lstrip("src=")
-            return shareable(re.search(r'"(?:http|https)://(?:www\.)?youtube\.com/embed/[\w-]+"', data))
+    if match := re.search(r'"(?:http|https)://(?:www\.)?youtube\.com/embed/([\w-]+)"', s):
+        return shareable(match.group(1))
     return None
 
-def shareable(url):
-    try:
-        if url:
-            query = url[0].split("/")
-            query[-1] = query[-1].rstrip('"')
-            return ("https://youtu.be/" + query[-1])
-        else:
-            return None
-    except Exception:
-        exit(None)
+def shareable(video_id):
+    if video_id:
+        return (f"https://youtu.be/{video_id}")
+    else:
+        return None
 
 
 if __name__ == "__main__":
