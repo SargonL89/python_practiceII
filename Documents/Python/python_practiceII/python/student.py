@@ -1,4 +1,5 @@
 import csv
+import random
 
 class Student:
     def __init__(self, name, city, cities):
@@ -6,8 +7,8 @@ class Student:
         self.cities = cities
         self.city = city
 
-    def __str__(self):
-        return f"{self.name} from {self.city}"
+    def get_info(self):
+        return self.name, self.city
     
     @property
     def name(self):
@@ -37,12 +38,28 @@ class Student:
             raise ValueError("Invalid city")
         self._city = city
 
+class Careers:
+    def __init__(self, name, city):
+        self._career = random.choice(["Legals", "Architecture", "Medicine", "Chemestry"])
+        self.name = name
+        self.city = city
+
+    def __str__(self):
+        return f"{self.name} from {self.city} is studying {self.career}"
+    
+    @property
+    def career(self):
+        return self._career
+    
+    @career.setter
+    def career(self, career):
+        self._career = career
 
 def main():
     cities = load_cities("voluspa/students.csv")
-    student = get_student(cities)
+    name, city = get_student(cities)
+    student = get_career(name, city)
     print(student)
-
 
 def load_cities(filename):
     cities = []
@@ -52,11 +69,15 @@ def load_cities(filename):
             cities.append(row[4])
     return cities
 
-
 def get_student(cities):
     name = input("Name: ")
     city = input("City: ")
-    return Student(name, city, cities)
+    stu = Student(name, city, cities)
+    name, city = stu.get_info()
+    return name, city
+
+def get_career(name, city):
+    return Careers(name, city)
 
 if __name__ == "__main__":
     main()
